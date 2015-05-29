@@ -1,0 +1,48 @@
+#!/usr/bin/env node
+
+'use strict';
+
+var reader, convert_to_json, type, data;
+var fs = require('fs');
+var serializers = require('../lib/index');
+
+var supported_types = ['alephseq', 'marcxml'];
+var usage = 'marc-record-serializer [--json] <record-type> <data>\n\n' +
+    '\tAvailable record types:\n' +
+    '\t\talephseq\t-\tAleph sequential\n' +
+    '\t\tmarcxml \t-\tMARC XML\n\n' +
+    '\t--json - Print records in JSON representation\n';
+
+if (process.argv.length < 4) {
+    console.log(usage);
+    process.exit(1);
+} else if (process.argv.length === 5 && process.argv[2] === '--json') {
+    convert_to_json = 1;
+    type = process.argv[3];
+    data = process.argv[4];
+} else {
+    type = process.argv[2];
+    data = process.argv[3];	
+}
+
+if (supported_types.indexOf(type) === -1) {
+    console.log(usage);
+    console.log('Unsupported record type');
+    process.exit(-1);
+}
+
+switch (type) {
+case 'alephseq':
+    reader = new serializers.AlephSequential.Reader(fs.createReadStream(data));
+    break;
+case 'marcxml':
+    reader = new serializers.MARCXML.Reader(fs.createReadStream(data));
+    break;
+default:
+    console.log('Unsupported record type: ' + type);
+    process.exit(-1);
+}
+
+reader.on('data', function(record) {
+    console.log(convert_to_json ? JSON.stringify(record.toJsonObject()) : record.toString());
+});
