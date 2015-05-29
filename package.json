@@ -9,8 +9,9 @@
   "author": "Pasi Tuominen <pasi.tuominen@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "jxon": "^1.3.2",
-    "marc-record-js": "git://github.com/petuomin/marc-record-js"
+      "jxon": "^1.3.2",
+      "xmldom": "^0.1.19",
+      "marc-record-js": "git://github.com/petuomin/marc-record-js"
   },
   "devDependencies": {
     "chai": "^2.0.0",
